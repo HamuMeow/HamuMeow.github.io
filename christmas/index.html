@@ -29,7 +29,6 @@
     #countdown { font-size: 1.8rem; color: #fbbc05; text-shadow: 0 0 15px rgba(0,0,0,0.5); margin: 20px 0; font-weight: bold; }
     .message { color: #ea4335; font-size: 3rem; font-weight: bold; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
 
-    /* 悬浮按钮通用 */
     .floating-btn {
       position: fixed;
       width: 45px;
@@ -54,7 +53,6 @@
     #music-control { bottom: 25px; right: 25px; }
     #music-switch { bottom: 85px; right: 25px; }
 
-    /* 音量调节器：宽度与按钮球一致(45px) */
     .volume-container {
       position: fixed;
       bottom: 145px;
@@ -64,14 +62,14 @@
       align-items: center;
       gap: 6px;
       background: rgba(255,255,255,0.1);
-      padding: 12px 0; /* 取消左右padding，靠宽度自适应 */
-      width: 45px;     /* 与按钮球同宽 */
+      padding: 12px 0;
+      width: 45px;
       border-radius: 22.5px;
       z-index: 2000;
       border: 1px solid rgba(255,255,255,0.1);
     }
     .volume-bar {
-      width: 28px;     /* 内部滑块宽度 */
+      width: 28px;
       height: 8px;
       background: rgba(255,255,255,0.3);
       border-radius: 4px;
@@ -86,7 +84,7 @@
     @keyframes snow { 0% { transform: translateY(-10vh) rotate(0deg); } 100% { transform: translateY(110vh) rotate(360deg); } }
     @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   </style>
-<meta name="generator" content="Hexo 7.3.0"></head>
+</head>
 <body onclick="tryAutoPlay()">
 
   <div class="main-container">
@@ -94,7 +92,17 @@
     <div class="message">Merry Christmas!</div>
     <div id="countdown">正在载入倒计时...</div>
     <div class="content" style="max-width: 600px; text-align: center; line-height: 1.8; padding: 0 20px; font-size: 1.1rem; color: #eee;">
-      <h2 id="Marry-Christmas！"><a href="#Marry-Christmas！" class="headerlink" title="Marry Christmas！"></a>Marry Christmas！</h2>
+      <h2 id="Marry-Christmas！"><a href="#Marry-Christmas！" class="headerlink" title="Marry Christmas！"></a>Marry Christmas！</h2><p>这是我和小毛球<del>一起</del>度过的第三个圣诞节啦，虽然圣诞节是外国人的节日，但是小毛球和我都很喜欢，无论是什么节日，那种与其他天与众不同的感觉才是节日存在的意义。</p>
+<hr>
+<p>时间过的真快呀，回想到去年这个时候，我才刚考完研，我都以及差不多淡忘了当时的具体感受，我只记得小毛球给了我一个<strong>大大的果冻</strong>，虽然吃了一半就觉得很腻没吃了，不过还是十分开心。</p>
+<p>去年圣诞节，我们再酒店里一起交换了礼物，我还记得那是一个小小的酒店哈哈哈，但是靠近市中心比较方便。小毛球送了我一个直到现在都还在使用的，很喜欢的<strong>键盘</strong>。</p>
+<p>说起来，我一直都不是一个很有计划感的人呐，小毛球为此生了好多气。不过我们一起在酒店玩的很开心<del>嘿嘿嘿</del>。</p>
+<p>自我决定考研开始，我们就过上了和以前玩玩耍耍不一样的日子。我们好像每天都比较忙，没有时间像以前那样闲逛和乱玩。</p>
+<p>不过与之相应的，我们两个都成长许多，做了很多以前不会去做不会去想的事情。包括去校外租房子，该用用该花花，还有很多看起来很小，但是对我们自身影响很大的事情。</p>
+<p>前年圣诞节呢，我们一起在北洋时光咖啡厅玩耍，我抱着<strong>大大的礼物箱</strong>，和小毛球一起拍了照片，这张照片我记忆深刻，在我的相册里面被打上了星号。无数个在北洋时光度过的夜晚，都让我回忆起那里昏黄的灯光和飘香的意大利面。可惜再也没有在哪个昏暗的角落<del>干坏事</del>的我们了哈哈。</p>
+<p>白驹过隙。今年圣诞节，我们分隔两地，虽有可惜，但无遗憾。</p>
+<h4 id="圣诞节快乐！小毛球，希望你每天都开心。"><a href="#圣诞节快乐！小毛球，希望你每天都开心。" class="headerlink" title="圣诞节快乐！小毛球，希望你每天都开心。"></a>圣诞节快乐！小毛球，希望你每天都开心。</h4><p><em>我还不会熟练的使用图片的插入，请各位读者谅解啦</em></p>
+
     </div>
   </div>
 
@@ -115,21 +123,46 @@
   <div id="music-control" class="floating-btn" onclick="toggleMusic()" title="播放/暂停">🎵</div>
 
   <script>
+    // 优化后的时间逻辑
     function updateCountdown() {
       const now = new Date();
-      const christmas = new Date(now.getFullYear(), 11, 25);
-      const target = (now > christmas) ? new Date(now.getFullYear() + 1, 11, 25) : christmas;
-      const diff = target - now;
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      document.getElementById('countdown').innerHTML = (days === 0 && now.getMonth() === 11 && now.getDate() === 25) ? 
-        "🎅 圣诞快乐！HO HO HO! 🎁" : `距离圣诞节还有: ${days}天 ${hours}时 ${minutes}分 ${seconds}秒`;
+      const currentYear = now.getFullYear();
+      
+      // 当年的圣诞节
+      const thisChristmas = new Date(currentYear, 11, 25);
+      // 当年祝福期结束（12月30日 23:59:59）
+      const endOfGreeting = new Date(currentYear, 11, 30, 23, 59, 59);
+      
+      let displayContent = "";
+
+      // 逻辑判定：
+      // 1. 如果现在在 12月25日 00:00:00 之后，且在 12月30日 23:59:59 之前
+      if (now >= thisChristmas && now <= endOfGreeting) {
+        displayContent = "🎅 圣诞快乐！HO HO HO! 🎁";
+      } else {
+        // 2. 否则，计算下一个圣诞节的倒计时
+        let targetYear = currentYear;
+        if (now > endOfGreeting) {
+          targetYear = currentYear + 1;
+        }
+        const targetDate = new Date(targetYear, 11, 25);
+        
+        const diff = targetDate - now;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        displayContent = `距离圣诞节还有: ${days}天 ${hours}时 ${minutes}分 ${seconds}秒`;
+      }
+
+      document.getElementById('countdown').innerHTML = displayContent;
     }
+
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
+    // 音乐与音量逻辑保持不变
     const bgm = document.getElementById('bgm');
     const audioSource = document.getElementById('audio-source');
     const playlist = ['/music/jinglebell-1.mp3', '/music/jinglebell-2.mp3'];
@@ -148,55 +181,14 @@
         }
       });
     }
-    
-    // 【修改】初始音量设置为 0.25 (即最下面的一格)
     setVolume(0.25);
 
     function playAudio() {
       bgm.play().then(() => {
         document.getElementById('music-control').style.animation = "rotate 3s linear infinite";
-      }).catch(err => console.log("等待点击播放"));
+      }).catch(err => console.log("等待交互"));
     }
 
     function toggleMusic() {
       if (bgm.paused) playAudio();
-      else { bgm.pause(); document.getElementById('music-control').style.animation = "none"; }
-    }
-
-    function switchMusic() {
-      currentTrack = (currentTrack + 1) % playlist.length;
-      bgm.pause();
-      audioSource.src = playlist[currentTrack];
-      bgm.load();
-      playAudio();
-    }
-
-    function tryAutoPlay() {
-      if (!hasInteracted) {
-        playAudio();
-        hasInteracted = true;
-      }
-    }
-
-    function createSnowflake() {
-      const snowflake = document.createElement('div');
-      snowflake.classList.add('snowflake');
-      snowflake.innerHTML = '❄';
-      snowflake.style.left = Math.random() * 100 + 'vw';
-      snowflake.style.animationDuration = Math.random() * 4 + 4 + 's';
-      snowflake.style.fontSize = Math.random() * 20 + 25 + 'px';
-      snowflake.style.opacity = Math.random() * 0.7 + 0.3;
-      document.body.appendChild(snowflake);
-      setTimeout(() => snowflake.remove(), 8000);
-    }
-    setInterval(createSnowflake, 200);
-
-    (function() {
-      var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-      link.type = 'image/png'; link.rel = 'icon';
-      link.href = 'https://img.icons8.com/emoji/48/000000/christmas-tree.png';
-      document.getElementsByTagName('head')[0].appendChild(link);
-    })();
-  </script>
-</body>
-</html>
+      else { bg
