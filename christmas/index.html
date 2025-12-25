@@ -5,93 +5,161 @@
   <title>圣诞快乐</title>
   <link id="favicon" rel="icon" href="https://img.icons8.com/emoji/48/000000/christmas-tree.png" type="image/png">
   <style>
+    :root { --main-red: #ea4335; --main-gold: #fbbc05; }
+
     body {
       background-color: #05361e; 
       color: white;
       font-family: "Microsoft YaHei", sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto; /* 允许纵向滚动 */
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
-      position: relative;
-      animation: fadeInEffect 1.5s ease-in-out;
     }
-    
-    @keyframes fadeInEffect { from { opacity: 0; } to { opacity: 1; } }
 
-    .main-container { display: flex; flex-direction: column; align-items: center; z-index: 10; }
-    .tree { font-size: 80px; margin-bottom: 10px; cursor: pointer; transition: transform 0.3s; }
+    /* 雪花背景层：固定在屏幕，不随滚动移动 */
+    #snow-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* 主内容容器：随页面滚动 */
+    .main-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 850px; /* 稍微调宽一点，方便长文字阅读 */
+      padding: 60px 25px 100px 25px; /* 上下预留间距 */
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 圣诞树、祝福语、倒计时：现在它们会随滚动移动 */
+    .header-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 50px;
+      width: 100%;
+    }
+
+    .tree { 
+      font-size: 85px; 
+      cursor: pointer; 
+      transition: transform 0.3s;
+      margin-bottom: 15px;
+      user-select: none;
+    }
     .tree:hover { transform: scale(1.1); }
     
-    #countdown { font-size: 1.8rem; color: #fbbc05; text-shadow: 0 0 15px rgba(0,0,0,0.5); margin: 20px 0; font-weight: bold; }
-    .message { color: #ea4335; font-size: 3rem; font-weight: bold; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
+    .message { 
+      color: var(--main-red); 
+      font-size: 3.2rem; 
+      font-weight: bold; 
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+      margin: 10px 0;
+      text-align: center;
+    }
 
+    #countdown { 
+      font-size: 1.4rem; 
+      color: var(--main-gold); 
+      font-weight: bold;
+      background: rgba(0,0,0,0.2);
+      padding: 8px 20px;
+      border-radius: 20px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+
+    /* 博客正文区域 */
+    .content {
+      line-height: 2;
+      font-size: 1.15rem;
+      color: #f0f0f0;
+      text-align: justify; /* 两端对齐，看起来更整齐 */
+      width: 100%;
+      word-wrap: break-word;
+      background: rgba(255, 255, 255, 0.05); /* 给文字一个极淡的底色，增加对比度 */
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    /* 悬浮按钮：保持固定在窗口位置 */
     .floating-btn {
       position: fixed;
-      width: 45px;
-      height: 45px;
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.3);
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(5px); /* 毛玻璃效果，更现代 */
+      border: 1px solid rgba(255,255,255,0.2);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       z-index: 2000;
-      font-size: 22px;
-      transition: all 0.3s;
-      text-decoration: none;
+      font-size: 24px;
       color: white;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      transition: all 0.3s;
     }
-    .floating-btn:hover { background: rgba(255,255,255,0.4); transform: scale(1.1); }
+    .floating-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-3px); }
 
-    #home-return { bottom: 25px; left: 25px; }
-    #music-control { bottom: 25px; right: 25px; }
-    #music-switch { bottom: 85px; right: 25px; }
+    #home-return { bottom: 30px; left: 30px; }
+    #music-control { bottom: 30px; right: 30px; }
+    #music-switch { bottom: 95px; right: 30px; }
 
+    /* 音量条：固定定位 */
     .volume-container {
       position: fixed;
-      bottom: 145px;
-      right: 25px;
+      bottom: 160px;
+      right: 30px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       background: rgba(255,255,255,0.1);
-      padding: 12px 0;
-      width: 45px;
-      border-radius: 22.5px;
+      backdrop-filter: blur(5px);
+      padding: 15px 0;
+      width: 48px;
+      border-radius: 24px;
       z-index: 2000;
       border: 1px solid rgba(255,255,255,0.1);
     }
-    .volume-bar {
-      width: 28px;
-      height: 8px;
-      background: rgba(255,255,255,0.3);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .volume-bar:hover { background: rgba(255,255,255,0.5); }
-    .volume-bar.active { background: #fbbc05; box-shadow: 0 0 8px #fbbc05; }
-    .volume-label { font-size: 11px; color: #eee; margin-bottom: 4px; font-weight: bold; }
+    .volume-bar { width: 30px; height: 10px; background: rgba(255,255,255,0.2); border-radius: 5px; cursor: pointer; transition: 0.2s; }
+    .volume-bar.active { background: var(--main-gold); box-shadow: 0 0 10px var(--main-gold); }
+    .volume-label { font-size: 10px; color: #ccc; font-weight: bold; margin-bottom: 2px; }
 
-    .snowflake { position: absolute; top: -50px; color: white; user-select: none; animation: snow linear infinite; pointer-events: none; }
+    .snowflake { position: absolute; color: white; user-select: none; animation: snow linear infinite; pointer-events: none; }
     @keyframes snow { 0% { transform: translateY(-10vh) rotate(0deg); } 100% { transform: translateY(110vh) rotate(360deg); } }
     @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   </style>
 </head>
 <body onclick="tryAutoPlay()">
 
+  <div id="snow-container"></div>
+
   <div class="main-container">
-    <div class="tree" onclick="toggleMusic()">🎄</div>
-    <div class="message">Merry Christmas!</div>
-    <div id="countdown">正在载入倒计时...</div>
-    <div class="content" style="max-width: 600px; text-align: center; line-height: 1.8; padding: 0 20px; font-size: 1.1rem; color: #eee;">
+    <div class="header-section">
+      <div class="tree" onclick="toggleMusic()">🎄</div>
+      <div class="message">Merry Christmas!</div>
+      <div id="countdown">载入中...</div>
+    </div>
+
+    <div class="content">
       <h2 id="Marry-Christmas！"><a href="#Marry-Christmas！" class="headerlink" title="Marry Christmas！"></a>Marry Christmas！</h2><p>这是我和小毛球<del>一起</del>度过的第三个圣诞节啦，虽然圣诞节是外国人的节日，但是小毛球和我都很喜欢，无论是什么节日，那种与其他天与众不同的感觉才是节日存在的意义。</p>
 <hr>
 <p>时间过的真快呀，回想到去年这个时候，我才刚考完研，我都以及差不多淡忘了当时的具体感受，我只记得小毛球给了我一个<strong>大大的果冻</strong>，虽然吃了一半就觉得很腻没吃了，不过还是十分开心。</p>
@@ -112,57 +180,41 @@
 
   <div class="volume-container">
     <span class="volume-label">VOL</span>
-    <div class="volume-bar" data-level="4" onclick="setVolume(1)" title="100%"></div>
-    <div class="volume-bar" data-level="3" onclick="setVolume(0.75)" title="75%"></div>
-    <div class="volume-bar" data-level="2" onclick="setVolume(0.5)" title="50%"></div>
-    <div class="volume-bar" data-level="1" onclick="setVolume(0.25)" title="25%"></div>
+    <div class="volume-bar" data-level="4" onclick="setVolume(1)"></div>
+    <div class="volume-bar" data-level="3" onclick="setVolume(0.75)"></div>
+    <div class="volume-bar" data-level="2" onclick="setVolume(0.5)"></div>
+    <div class="volume-bar" data-level="1" onclick="setVolume(0.25)"></div>
   </div>
 
-  <a href="/" id="home-return" class="floating-btn" title="返回首页">🏠</a>
-  <div id="music-switch" class="floating-btn" onclick="switchMusic()" title="更换音乐">🔁</div>
-  <div id="music-control" class="floating-btn" onclick="toggleMusic()" title="播放/暂停">🎵</div>
+  <a href="/" id="home-return" class="floating-btn">🏠</a>
+  <div id="music-switch" class="floating-btn" onclick="switchMusic()">🔁</div>
+  <div id="music-control" class="floating-btn" onclick="toggleMusic()">🎵</div>
 
   <script>
-    // 优化后的时间逻辑
+    // 时间逻辑
     function updateCountdown() {
       const now = new Date();
-      const currentYear = now.getFullYear();
-      
-      // 当年的圣诞节
-      const thisChristmas = new Date(currentYear, 11, 25);
-      // 当年祝福期结束（12月30日 23:59:59）
-      const endOfGreeting = new Date(currentYear, 11, 30, 23, 59, 59);
-      
-      let displayContent = "";
-
-      // 逻辑判定：
-      // 1. 如果现在在 12月25日 00:00:00 之后，且在 12月30日 23:59:59 之前
+      const cYear = now.getFullYear();
+      const thisChristmas = new Date(cYear, 11, 25);
+      const endOfGreeting = new Date(cYear, 11, 30, 23, 59, 59);
+      let content = "";
       if (now >= thisChristmas && now <= endOfGreeting) {
-        displayContent = "🎅 圣诞快乐！HO HO HO! 🎁";
+        content = "🎅 圣诞快乐！HO HO HO! 🎁";
       } else {
-        // 2. 否则，计算下一个圣诞节的倒计时
-        let targetYear = currentYear;
-        if (now > endOfGreeting) {
-          targetYear = currentYear + 1;
-        }
-        const targetDate = new Date(targetYear, 11, 25);
-        
-        const diff = targetDate - now;
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        
-        displayContent = `距离圣诞节还有: ${days}天 ${hours}时 ${minutes}分 ${seconds}秒`;
+        let tYear = (now > endOfGreeting) ? cYear + 1 : cYear;
+        const diff = new Date(tYear, 11, 25) - now;
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        content = `距离圣诞节还有: ${d}天 ${h}时 ${m}分 ${s}秒`;
       }
-
-      document.getElementById('countdown').innerHTML = displayContent;
+      document.getElementById('countdown').innerHTML = content;
     }
-
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // 音乐与音量逻辑保持不变
+    // 音乐与音量逻辑
     const bgm = document.getElementById('bgm');
     const audioSource = document.getElementById('audio-source');
     const playlist = ['/music/jinglebell-1.mp3', '/music/jinglebell-2.mp3'];
@@ -171,14 +223,8 @@
 
     function setVolume(val) {
       bgm.volume = val;
-      const bars = document.querySelectorAll('.volume-bar');
-      bars.forEach(bar => {
-        const level = parseFloat(bar.getAttribute('data-level')) / 4;
-        if (level <= val) {
-          bar.classList.add('active');
-        } else {
-          bar.classList.remove('active');
-        }
+      document.querySelectorAll('.volume-bar').forEach(bar => {
+        bar.classList.toggle('active', parseFloat(bar.getAttribute('data-level')) / 4 <= val);
       });
     }
     setVolume(0.25);
@@ -186,9 +232,42 @@
     function playAudio() {
       bgm.play().then(() => {
         document.getElementById('music-control').style.animation = "rotate 3s linear infinite";
-      }).catch(err => console.log("等待交互"));
+      }).catch(() => {});
     }
 
     function toggleMusic() {
-      if (bgm.paused) playAudio();
-      else { bg
+      if (bgm.paused) playAudio(); else { bgm.pause(); document.getElementById('music-control').style.animation = "none"; }
+    }
+
+    function switchMusic() {
+      currentTrack = (currentTrack + 1) % playlist.length;
+      bgm.pause(); audioSource.src = playlist[currentTrack]; bgm.load(); playAudio();
+    }
+
+    function tryAutoPlay() { if (!hasInteracted) { playAudio(); hasInteracted = true; } }
+
+    // 雪花背景生成
+    function createSnowflake() {
+      const snowContainer = document.getElementById('snow-container');
+      const snowflake = document.createElement('div');
+      snowflake.className = 'snowflake';
+      snowflake.innerHTML = '❄';
+      snowflake.style.left = Math.random() * 100 + 'vw';
+      snowflake.style.animationDuration = Math.random() * 4 + 4 + 's';
+      snowflake.style.fontSize = Math.random() * 20 + 25 + 'px';
+      snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+      snowContainer.appendChild(snowflake);
+      setTimeout(() => snowflake.remove(), 8000);
+    }
+    setInterval(createSnowflake, 200);
+
+    // Favicon 修改
+    (function() {
+      var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+      link.type = 'image/png'; link.rel = 'icon';
+      link.href = 'https://img.icons8.com/emoji/48/000000/christmas-tree.png';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    })();
+  </script>
+</body>
+</html>
